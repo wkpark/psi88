@@ -1,0 +1,66 @@
+Dan Severence from Yale University has another present for us.
+The Molecular Orbital Plotting program - PSI88. Send your comments and thanks
+to: 
+   Dan Severance
+   dan@rani.chem.yale.edu
+
+The headlines are:
+                             PSI/88 Version 1.0
+    Purpose:       To plot wavefunctions in three dimensions from
+                  semi-empirical and most popular ab initio basis sets. 
+                  Valence semi-empirical, STO-3G, 3-21++G(*) and
+                  6-31++G(d,p) basis sets are implemented for atoms
+                  H-Ar.
+    Language:      FORTRAN 77
+    Tested on:     Silicon Graphics, SUN, VMS, ULTRIX, CYBER 205, CRAY.
+                   Should be easily portable to others.
+    Required:      Any CALCOMP compatible graphics library - some are
+                   included in the distribution (e.g. PostScipt and HPGL)
+    Memory:        200K Single precision 32bit words - PSI1, PSICON
+                   400K Single precision 32bit words - PSI2
+    Authors:       William L. Jorgensen
+                   Daniel L. Severance
+                   Department of Chemistry
+                   Yale University
+                   P.O. Box 6666
+                   New Haven, CT 06511, USA.
+                   Phone (203) 432-6288
+                   Fax (203) 432-6144
+                   Internet: dan@rani.chem.yale.edu
+=========================================================================
+How to get it ? (the total disk space required is about 400kBytes)
+
+If you have ftp:
+================
+ftp kekule.osc.edu   (or ftp 128.146.36.48)
+Login: anonymous
+Password: Your_email_address
+ftp> cd pub/chemistry/psi88
+ftp> ls -l 
+ftp> binary
+ftp> get psi88.tar.Z
+ftp> quit
+
+then uncompress and untar psi88 as:
+zcat psi88.tar.Z | tar xvof -
+
+If you do not have ftp:
+=======================
+You can only use this method if your mailer allows files as large as 140kB.
+Send following messages to OSCPOST@osc.edu or OSCPOST@OHSTPY.BITNET
+    send psi88/readme from chemistry
+    send psi88/psi88.doc from chemistry
+    send psi88/oscpostfile from chemistry
+Read "readme" and "psi88.doc" files when they arrive and decide what you need.
+Use your favorite editor to remove headers from "oscpostfile" and delete files
+which you need. Send "oscpostfile" to OSCPOST@osc.edu or OSCPOST@OHSTPY.BITNET
+and patiently collect the incoming mail into appropriate files (which are 
+given in the subject lines). It is a lot of work (as you can see after
+reading "readme" file) since before you can use these files, you have to
+carefully edit out the e-mail headers. 
+
+Jan Labanowski
+Ohio Supercomputer Center
+jkl@osc.edu, JKL@OHSTPY.BITNET
+
+

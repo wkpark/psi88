@@ -1,0 +1,7 @@
+
+  This facilitates generation of PSI/88 input files 
+  from G92 checkpoint files.
+ 
+  dan@omega.chem.yale.edu
+  
+ 

@@ -1,0 +1,38 @@
+#! /bin/csh -e -f
+#
+# script to run the PSI1/88 program, followed by a run of PSICON/88
+# If a new contour level is desired at a later time, one need only
+# rerun the PSICON/88 program with the new contour level in the input.
+#
+set ofiles = (22 23 24)
+#
+if ($#argv == 0) goto noargs
+#
+# Run PSI1/88 using cmdlin.psi1 as input
+#
+time ./PSI1 < $1.psi1
+#
+# remove any old files with the target name
+#
+rm -f $1.f17
+ln FOR017 $1.f17
+#
+# Run PSICON/88 program using cmdlin.psicon as input
+#
+time PSICON < $1.psicon
+#
+# Store new output files
+#
+rm -f FOR017
+foreach argument ($ofiles[*])
+   rm -f $1.f$argument 
+   ln FOR0$argument $1.f$argument 
+   rm -f FOR0$argument
+end
+#
+# Done!
+#
+exit
+noargs:
+echo 'Usage: "rpsi1 filename " '
+exit

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# script to run the PREPLOT/88 program to convert a MOPAC "graph" file
+# into input files for PSI1/88, PSICON/88 and PSI2/88.
+#
+if [ "$1" = "" ] ; then
+ echo 'Usage: "preplot filename " '
+ exit 1
+fi
+#
+# This script assumes the MOPAC graph files are named with the
+# file extension ".gpt", if they are named differently; the following
+# lines will need to be modified
+#
+if [ -f $1.gpt ] ; then
+  ln $1.gpt fort.13
+  echo -n 'what is the number of the MO to be plotted? '
+  read ans
+  echo $ans > tmp
+  PREPLOT < tmp > /dev/null
+  rm -f tmp fort.13
+  mv -f fort.8  $1.psi1
+  mv -f fort.9  $1.psicon
+  mv -f fort.10 $1.psi2
+  exit 1
+fi

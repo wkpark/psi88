@@ -1,0 +1,15 @@
+            Instructions for setting up in a VMS environment.
+     Put all of these files in the same directory as the executables
+will reside.
+     Read through the LOGINPSI.COM file, modify the defines to point to the
+appropriate directories, and append it to the user's login.com file 
+or add it to the system wide sylogin.com file (if all are to use it).
+The 3 defines at the top can be removed if they are added to the 
+systartup_v5.com file with the addition of the /system qualifier
+(define/system instead of just define)
+     Also look through the MAKEPSI.COM file and set any appropriate
+directory names needed there.
+     The rest of the files depend on the DEFINEs being done either in
+the system or user login files, if they are not, then all of the other
+files will have to be edited and the defines made to the appropriate 
+directories internally...

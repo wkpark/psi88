@@ -1,0 +1,20 @@
+#! /bin/csh -e -f
+#
+# script to run the PSICON/88 contour generation program.
+# If a new contour level is desired at a later time, one need only
+# rerun the PSICON/88 program with the new contour level in the input.
+#
+set files = (22 23 24)
+#
+if ($#argv == 0) goto noargs
+ln $1.f17 FOR017 
+time PSICON < $1.psicon
+foreach argument ($files[*])
+   rm -f $1.f$argument 
+   ln FOR0$argument $1.f$argument 
+end
+rm -f FOR0*
+exit
+noargs:
+echo 'Usage: "rpsicon filename" ' 
+exit

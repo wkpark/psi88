@@ -1,0 +1,84 @@
+   Hello World...
+
+   The tar file contains all of the source for psi88, if you want the 
+untarred source, it is found in the files subdirectory here.
+
+   You will need to set binary ftp mode before downloading the compressed
+files in the files directory.
+
+   Let me know if you need anything else..
+   Dan Severance
+   dan@rani.chem.yale.edu
+
+=========================================================
+Some comments added by Jan Labanowski - I did not change anything but only
+redistributed files into several directories.
+If you want the whole thing at once, get psi88.tar.Z (compressed tar
+archive).
+
+There are following directories:
+
+psi88  - the top directory. Other directories are underneath.
+         Contains also documentation.
+      -rw-r--r--  1 jkl         21073 May 24 14:50 psi88.doc
+      -rw-r--r--  1 jkl           810 May 26 13:08 readme
+      drwxr-xr-x  2 jkl           512 May 26 12:58 examples
+      drwxr-xr-x  2 jkl           512 May 26 12:57 src
+      drwxr-xr-x  2 jkl           512 May 26 13:00 unix
+      drwxr-xr-x  2 jkl           512 May 26 13:01 vms
+
+psi88/examples - contains examples    
+      -rw-r--r--  1 jkl          2360 May 24 14:49 ad634a.psi1
+      -rw-r--r--  1 jkl           824 May 24 14:49 ad634a.psi2
+      -rw-r--r--  1 jkl            41 May 24 14:49 ad634a.psicon
+      -rw-r--r--  1 jkl          2360 May 24 14:49 ad635a.psi1
+      -rw-r--r--  1 jkl           823 May 24 14:49 ad635a.psi2
+      -rw-r--r--  1 jkl            41 May 24 14:49 ad635a.psicon
+      -rw-r--r--  1 jkl          2360 May 24 14:49 ad636a.psi1
+      -rw-r--r--  1 jkl           824 May 24 14:49 ad636a.psi2
+      -rw-r--r--  1 jkl            41 May 24 14:49 ad636a.psicon
+      -rw-r--r--  1 jkl          3257 May 24 14:49 ch3cl.psi1
+      -rw-r--r--  1 jkl           441 May 24 14:49 ch3cl.psi2
+      -rw-r--r--  1 jkl            46 May 24 14:49 ch3cl.psicon
+      -rw-r--r--  1 jkl          1823 May 24 14:50 test.psi1
+      -rw-r--r--  1 jkl          1205 May 24 14:50 test.psi2
+      -rw-r--r--  1 jkl            27 May 24 14:50 test.psicon
+
+psi88/src - contains all sources and makefile
+      -rw-r--r--  1 jkl         14481 May 24 14:50 chk2psi.f
+      -rw-r--r--  1 jkl         10988 May 24 14:50 ctplot.f
+      -rw-r--r--  1 jkl         12595 May 24 14:50 gksplot.f
+      -rw-r--r--  1 jkl         11349 May 24 14:50 hpplot.f
+      -rw-r--r--  1 jkl          4259 May 24 15:04 makefile
+      -rw-r--r--  1 jkl          5270 May 24 14:50 preplot.f
+      -rw-r--r--  1 jkl        138282 May 24 14:50 psi1.f
+      -rw-r--r--  1 jkl         29505 May 24 14:50 psi2.f
+      -rw-r--r--  1 jkl         19348 May 24 14:50 psicon.f
+      -rw-r--r--  1 jkl         14715 May 24 14:50 psplot.f
+
+psi88/unix - contains UNIX scripts to run PSI88
+      -rwxr-xr-x  1 jkl           645 May 24 14:50 preplot
+      -rwxr-xr-x  1 jkl           730 May 24 14:50 rpsi1
+      -rwxr-xr-x  1 jkl          2932 May 24 14:50 rpsi2
+      -rwxr-xr-x  1 jkl           471 May 24 14:50 rpsicon
+
+psi88/vms - contains command files to run PSI88 under VAX/VMS
+      -rw-r--r--  1 jkl           936 May 24 14:49 loginpsi.com
+      -rw-r--r--  1 jkl          1977 May 24 14:49 makepsi.com
+      -rw-r--r--  1 jkl           990 May 24 14:49 preplot.com
+      -rw-r--r--  1 jkl           137 May 24 14:49 psi1.com
+      -rw-r--r--  1 jkl           384 May 24 14:49 psi2.com
+      -rw-r--r--  1 jkl           141 May 24 14:49 psi2ct.com
+      -rw-r--r--  1 jkl           141 May 24 14:49 psi2hp.com
+      -rw-r--r--  1 jkl           141 May 24 14:49 psi2ps.com
+      -rw-r--r--  1 jkl          1124 May 24 14:49 psi2tk41.com
+      -rw-r--r--  1 jkl           142 May 24 14:49 psicon.com
+      -rw-r--r--  1 jkl           864 May 24 14:49 readme.vax
+      -rw-r--r--  1 jkl          1299 May 24 14:49 rpsi1.com
+      -rw-r--r--  1 jkl          1569 May 24 14:50 rpsi2.com
+      -rw-r--r--  1 jkl          1049 May 24 14:50 rpsi2ct.com
+      -rw-r--r--  1 jkl          1144 May 24 14:50 rpsi2hp.com
+      -rw-r--r--  1 jkl          1140 May 24 14:50 rpsi2ps.com
+      -rw-r--r--  1 jkl           970 May 24 14:50 rpsicon.com
+
+
