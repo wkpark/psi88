@@ -167,7 +167,7 @@ C
       WRITE (ILST,110) TITLE,SUBT
   110 FORMAT (1X,A/)
       WRITE (ILST,120) THE,GAM,PHI,SCALE
-  120 FORMAT ('0','THETA = ',F6.1,2X,'GAMMA = ',F6.1,2X,'PHI = ',F6.1/1X
+  120 FORMAT (' ','THETA = ',F6.1,2X,'GAMMA = ',F6.1,2X,'PHI = ',F6.1/1X
      *   ,'SCALE = ',F6.3/)
       STOP
       END
