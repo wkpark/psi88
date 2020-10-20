@@ -21,6 +21,7 @@
 #  FAX:  (203) 432-6144
 #
 #########################################################################
+SYSTEM := $(shell uname)
 #
 # You may add other optimization flags specific to your machine here
 # It is always a good idea to test the program with a lower optimization 
@@ -29,33 +30,46 @@
 #
 # SGI 4D series flags
 #
-#f77 = f77
-#FFLAGS = -w0 -O4 -G 64
-#LFLAGS = -lfastm -lfpe -s
+ifeq ($(SYSTEM),IRIX)
+ FC = f77
+ FFLAGS = -w0 -O4 -G 64
+ LFLAGS = -lfastm -lfpe -s
+endif
 #
 # SUN Sparc series flags version 1.3 or later compiler
 #
-#f77 = f77
-#FFLAGS = -fast -O3
-#LDFLAGS = -Bstatic
+ifeq ($(SYSTEM),SunOS)
+ FC = f77
+ FFLAGS = -fast -O3
+ LDFLAGS = -Bstatic
+endif
 #
 # SUN Sparc series flags version 1.2 compiler
 #
-#f77 = f77
+#FC = f77
 #FFLAGS = -dalign -O3 /usr/lib/libm.il
 #LDFLAGS =
 #
 # CRAY Unicos compilation flags
 #
-#f77 = cf77
+#FC = cf77
 #FFLAGS = -Zv -Wf" -a static -m 0 -d p"
 #LFLAGS = -Wl" -lnet" 
 #
 # IBM RS/6000 Series compilation flags (tentative)
 #
-#f77 = xlf
+#FC = xlf
 #FFLAGS = -O 
 #LDFLAGS = 
+#
+# Linux
+#
+ifeq ($(SYSTEM),Linux)
+ FC = f77
+ FFLAGS = -std=legacy -g
+ LDFLAGS =
+ GKSLIB = -lxgks
+endif
 #
 #  Place your G88/G90 util library definition here if you wish to 
 #  compile chk2psi
@@ -79,7 +93,7 @@ BIN = /usr/local/bin
 # User defined library for the screen
 #GRLIBS =
 #
-EXTRAS = 
+EXTRAS = PSI2GKS
 # EXTRAS = PSI2 PSI2GKS
 #######################################################################
 #
@@ -106,59 +120,59 @@ install: PSI1 PSICON PSI2CT PSI2HP PSI2PS PREPLOT chk2psi $(EXTRAS)
 # This is the Density matrix generation program (PSI1/88)
 #
  PSI1: psi1.f 
-	f77 $(FFLAGS) psi1.f -o PSI1 $(LFLAGS)
+	$(FC) $(FFLAGS) psi1.f -o PSI1 $(LFLAGS)
 
 #
 # This is the contour generation program (PSICON/88)
 # 
  PSICON: psicon.f
-	f77 $(FFLAGS) psicon.f -o PSICON $(LFLAGS)
+	$(FC) $(FFLAGS) psicon.f -o PSICON $(LFLAGS)
 
 #
 # This is for the plotting routine (PSI2/88) to a user defined graphics lib
 #
  PSI2: psi2.f
-	f77 $(FFLAGS) psi2.f -o PSI2 $(GRLIBS) $(LFLAGS)
+	$(FC) $(FFLAGS) psi2.f -o PSI2 $(GRLIBS) $(LFLAGS)
 
 #
 #  This is for the plotting routine set up to plot to a GKS device
 #  gksplot.f is a gks library that SHOULD work on any machine.....
 #
  PSI2GKS: psi2.f gksplot.f
-	f77 $(FFLAGS) psi2.f gksplot.f -o PSI2GKS $(LFLAGS) $(GKSLIB)
+	$(FC) $(FFLAGS) psi2.f gksplot.f -o PSI2GKS $(LFLAGS) $(GKSLIB)
 
 #
 #  This is for the plotting routine set up to plot to a ChemText Metafile
 #
  PSI2CT: psi2.f ctplot.f
-	f77 $(FFLAGS) psi2.f ctplot.f -o PSI2CT $(LFLAGS)
+	$(FC) $(FFLAGS) psi2.f ctplot.f -o PSI2CT $(LFLAGS)
 
 #
 #  This is for the plotting routine set up to plot to a PostScript device
 #  psplot.f is a postscript library that SHOULD work on any machine.....
 #
  PSI2PS: psi2.f psplot.f
-	f77 $(FFLAGS) psi2.f psplot.f -o PSI2PS $(LFLAGS)
+	$(FC) $(FFLAGS) psi2.f psplot.f -o PSI2PS $(LFLAGS)
 
 #
 #  This is for the plotting routine set up to plot to a HP plotter
 #  hpplot.f is a HP plotter library that SHOULD work on any machine.....
 #
  PSI2HP: psi2.f hpplot.f
-	f77 $(FFLAGS) psi2.f hpplot.f -o PSI2HP $(LFLAGS)
+	$(FC) $(FFLAGS) psi2.f hpplot.f -o PSI2HP $(LFLAGS)
 
 #
 # This is a program to convert MOPAC .GPT files (using the graph keyword)
 # to PSI/88 input files.
 #
  PREPLOT: preplot.f 
-	f77 $(FFLAGS) preplot.f -o PREPLOT $(LFLAGS)
+	$(FC) $(FFLAGS) preplot.f -o PREPLOT $(LFLAGS)
 
 #
 # This is a program to read checkpoint files - 
 #
  chk2psi: chk2psi.f $(G90LIB)
-	f77 $(FFLAGS) chk2psi.f $(G90LIB) -o chk2psi $(LFLAGS)
+	$(FC) $(FFLAGS) chk2psi.f $(G90LIB) -o chk2psi $(LFLAGS)
 
 #
 # Clean up when done
