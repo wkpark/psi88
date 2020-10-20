@@ -218,6 +218,12 @@ c
          call plsout (
      *      '/w {currentpoint stroke moveto setlinewidth} def\n')
 c
+c       set color def.
+c
+         call plsout ('/red {1 0 0 setrgbcolor} def\n')
+         call plsout ('/blue {0 0 1 setrgbcolor} def\n')
+         call plsout ('/black {0 0 0 setrgbcolor} def\n')
+c
 c       set character height
 c
          call plsout ('/h {sf exch scalefont setfont} def\n')
@@ -632,7 +638,7 @@ c
       integer usepen
       integer savpen
       save savpen
-      data savpen / 1 /
+      data savpen / 0 /
 
       npen = max(ipen,1)
       if (npen.ne.savpen) then
@@ -640,8 +646,14 @@ c
 c     want pen width to be odd number of pixels wide
 c
          usepen = ((npen-1)*2)+1
+c        ipen == 1 case: bond type - force pen width 5
+         If (npen.eq.1) usepen = 5
          call pliout (usepen)
          call plsout (' w\n')
+         If (ipen.eq.1) call plsout('black\n')
+         If (ipen.eq.2) call plsout('blue\n')
+         If (ipen.eq.3) call plsout('red\n')
+         If (ipen.ge.4) call plsout('black\n')
 
          savpen = npen
       endif
