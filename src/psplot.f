@@ -15,26 +15,19 @@ c    These routines do _not_ generate Encapsulated PostScript... just
 c    the plain vanilla variety...
 c
       subroutine plbegn
-      character*7 fname
       character bigstr*256
       common /str/ bigstr,nstr
-      data fname / 'psplot'/
       nstr = 1
-      open (7,file=fname,status='unknown',iostat=l)
-      if (l.ne.0) then
-         write (*,*) 'plbegn: can''t open ',fname
-         return
-      endif
-      write (7,*) '%!'
-      write (7,*) '% postscript output from ccps library'
+      write (6,*) '%!'
+      write (6,*) '% postscript output from ccps library'
       return
       end
 c
 c
       subroutine pldone
 c
-      write (7,*) '% end of ccps output'
-      close (7)
+      write (6,*) '% end of ccps output'
+      close (6)
       return
       end
 c
@@ -107,10 +100,10 @@ c
       if (i.ne.0) then
          iend = i-1
          if (nstr.eq.1) then
-            write (7,*) s(1:iend)
+            write (6,*) s(1:iend)
          else
             nstr = nstr-1
-            write (7,*) bigstr(1:nstr),s(1:iend)
+            write (6,*) bigstr(1:nstr),s(1:iend)
             nstr = 1
          endif
       else
