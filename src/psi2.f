@@ -90,7 +90,7 @@ C
      *   IDASH,SCALE,PERZ
       COMMON /BONDS/ NBND,IB(35),IC(35)
 C
-      DIMENSION IAN(60),C(1024,3),IATSMN(60)
+      DIMENSION IAN(60),C(1024,3),IATSMN(60),CC(1024,3)
       CHARACTER TITLE*120,SUBT*40,IATSYM(60)*2
       EQUIVALENCE (C(1,1),X(1))
       DATA IRD,ILST/ 5,6 /
@@ -154,6 +154,13 @@ C
    90 JLINES = 1
   100 CONTINUE
 C
+C     Save original positions
+C
+      Do I = 1, N
+        CC(I,1) = C(I,1)
+        CC(I,2) = C(I,2)
+        CC(I,3) = C(I,3)
+      End Do
       CALL DRAMOL (C,N,IAN,TITLE,CO,THE,GAM,PHI,CM,PERZ,SCALE,INIT,
      *   IATSYM,IATSMN)
       IF (MOL.NE.1) CALL HIDPLT (SUBT,NHL,JLINES)
@@ -163,12 +170,22 @@ C     TO MAKE THE TERMINAL WAIT FOR YOU TO FINISH BEFORE CLEARING THE
 C     SCREEN.  (WAIT FOR CARRIAGE-RETURN, OR MOUSE-CLICK, ETC. BEFORE
 C     EXECUTING THE LAST CALL TO PLOT.
 C
-      CALL PLOT (0.0E+0,0.0E+0,999)
+      IMOD = 999
+      CALL PLOT (0.0E+0,0.0E+0,IMOD)
       WRITE (ILST,110) TITLE,SUBT
   110 FORMAT (1X,A/)
       WRITE (ILST,120) THE,GAM,PHI,SCALE
   120 FORMAT (' ','THETA = ',F6.1,2X,'GAMMA = ',F6.1,2X,'PHI = ',F6.1/1X
      *   ,'SCALE = ',F6.3/)
+C
+C     Restore
+C
+      Do I = 1, N
+        C(I,1) = CC(I,1)
+        C(I,2) = CC(I,2)
+        C(I,3) = CC(I,3)
+      End Do
+      If (IMOD.NE.999) Goto 100
       STOP
       END
 C
@@ -245,7 +262,8 @@ C
 C
 C       TRANSFORM C
 C
-      CALL ROTCOR (C,NAT,THE,GAM,PHI,PERZ,CO)
+      !CALL ROTCOR (C,NAT,THE,GAM,PHI,PERZ,CO)
+      CALL ROTXYZ (C,NAT,THE,GAM,PHI,PERZ,CO)
       CL = CM*SCALE
       ADMI = -CL
       PII = CL*0.20E+0
@@ -459,6 +477,65 @@ C
       RETURN
       END
 C
+C     Jmol compatible rotation rotateXYZ
+C
+      SUBROUTINE ROTXYZ (A,N,PX,PY,PZ,PERZ,CO)
+      Implicit Real(A-H,O-Z)
+      DIMENSION A(1024,3),CO(3),RM(3,3),B(3)
+      DATA PI / 3.141592653610E+0 /
+      RPI = PI/180.0E+0
+C
+C       TRANSFORM TO CENTERED SYSTEM
+C
+      DO I = 1, 3
+         DO J = 1, N
+            A(J,I) = A(J,I)-CO(I)
+         End Do
+      End Do
+C
+C       ROTATION
+C
+      cx = cos(pX*RPI)
+      sx = sin(pX*RPI)
+      cy = cos(pY*RPI)
+      sy = sin(pY*RPI)
+      cz = cos(pZ*RPI)
+      sz = sin(pZ*RPI)
+      RM(1,1) = cz*cy
+      RM(2,1) = -sz*cx + cz*sy*sx
+      RM(3,1) = sz*sx + cz*sy*cx
+      RM(1,2) = sz*cy
+      RM(2,2) = cz*cx + sx*sy*sz
+      RM(3,2) = -cz*sx + sz*sy*cx
+      RM(1,3) = -sy
+      RM(2,3) = sx*cy
+      RM(3,3) = cx*cy
+      Do K = 1, N
+        Do I = 1, 3
+          S = 0.0
+          Do J = 1, 3
+            S = S + RM(J,I)*A(K,J)
+          End Do
+          B(I)=S
+        End Do
+        Do I = 1, 3
+          A(K,I)=B(I)
+        End Do
+      End Do
+C
+C       GIVE PERSPECTIVE
+C
+      DO I = 1, N
+         RT = PERZ-A(I,3)
+         IF (RT.NE.0.0E+0) THEN
+            RT = PERZ/RT
+            A(I,1) = RT*A(I,1)
+            A(I,2) = RT*A(I,2)
+         ENDIF
+      End Do
+      RETURN
+      END
+C
 C
       SUBROUTINE HIDPLT (SUBT,NHL,JLINES)
       IMPLICIT REAL (A-H,O-Z)
@@ -489,6 +566,9 @@ C
 C       READ CURVE DATA FROM DISK FILES, TRANSFORM CURVES AND
 C       DETERMINE EXTREMA FOR EACH CURVE
 C
+      REWIND(IDSK1)
+      REWIND(IDSK2)
+      REWIND(IDSK3)
       OPEN (IDSK1,FILE='FOR022',STATUS='OLD')
       OPEN (IDSK2,FILE='FOR023',STATUS='OLD')
       OPEN (IDSK3,FILE='FOR024',STATUS='OLD')
@@ -588,7 +668,8 @@ C
 C
 C       ROTATE THE CONTOUR USING THETA,PHI,GAMMA.....
 C
-         CALL ROTCOR (C,K,THE,GAM,PHI,PERZ,CO)
+         CALL ROTXYZ (C,K,THE,GAM,PHI,PERZ,CO)
+         !CALL ROTCOR (C,K,THE,GAM,PHI,PERZ,CO)
 C
 C       DETERMINE THE PLANE EQUATION FOR EACH CONTOUR TO USE IN
 C       THE HIDDEN LINE ROUTINE.
@@ -829,6 +910,9 @@ C
       YMIN = MIN(YMIN,YMOLMN)
       YMIN = 5.00E+0*(YMIN+CL)/CL-0.800E+0
       CALL SYMBOL (XSBT,YMIN,HITE,SUBT,0.00E+0,40)
+      CLOSE(IDSK1)
+      CLOSE(IDSK2)
+      CLOSE(IDSK3)
       RETURN
       END
 C
