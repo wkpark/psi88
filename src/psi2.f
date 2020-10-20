@@ -325,23 +325,13 @@ C        Y = ((C(I,2)+CL)/CL)*5.00E+0-0.0710E+0-0.0500E+0
 C
          IF (NP.EQ.2) X = X-0.0500E+0
 C
-C       DRAW ATOMS 4 TIMES TO DARKEN (FOR BAD PENS, ETC.)
+C       DRAW ATOMS
 C
-         DO 100 J = 1, 4
-            GO TO (90,60,70,80), J
-   60       Y = Y+0.0050E+0
-            X = X+0.0050E+0
-            GO TO 90
-   70       X = X+0.0050E+0
-            Y = Y-0.0050E+0
-            GO TO 90
-   80       Y = Y-0.0050E+0
-            X = X-0.0050E+0
-   90       IF (IANI.GT.18) THEN
-               CALL SYMBOL (X,Y,0.250E+0,IATSYM(I),0.00E+0,NP)
-            ELSE
-               CALL SYMBOL (X,Y,0.250E+0,ATS(IANI),0.00E+0,NP)
-            ENDIF
+         IF (IANI.GT.18) THEN
+            CALL SYMBOL (X,Y,0.250E+0,IATSYM(I),0.00E+0,NP)
+         ELSE
+            CALL SYMBOL (X,Y,0.250E+0,ATS(IANI),0.00E+0,NP)
+         ENDIF
   100 CONTINUE
 C
 C ***********************************************
@@ -355,6 +345,7 @@ C
 C       DRAW BONDS
 C
       IF (NBND.NE.0) THEN
+         CALL NEWPEN (1)
          BX(3) = ADMI
          BY(3) = ADMI
          BX(4) = PII
@@ -368,19 +359,9 @@ C
             BY(2) = C(ICI,2)
             CALL LVGAP (BX(1),BY(1),BX(2),BY(2),PII,IER)
 C
-C       PLOT BONDS 4 TIMES SLIGHTLY OFFSET, THIS WILL DARKEN THEM IN
-C       ON PEN-PLOTTERS AS WELL AS LASER PRINTERS.
+C       PLOT BONDS
 C
             IF (IER.NE.1) THEN
-               CALL DSHLIN (BX,BY,2,NULL,NULL,0)
-               BY(1) = BY(1)+.0050E+0
-               BY(2) = BY(2)+.0050E+0
-               CALL DSHLIN (BX,BY,2,NULL,NULL,0)
-               BX(1) = BX(1)+.0050E+0
-               BX(2) = BX(2)+.0050E+0
-               CALL DSHLIN (BX,BY,2,NULL,NULL,0)
-               BY(1) = BY(1)-0.0050E+0
-               BY(2) = BY(2)-0.0050E+0
                CALL DSHLIN (BX,BY,2,NULL,NULL,0)
             ENDIF
   110    CONTINUE
