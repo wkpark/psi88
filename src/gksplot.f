@@ -15,19 +15,34 @@ C     INCLUDE 'SYS$LIBRARY:GKSDEFS.BND'
 C
       COMMON /PSCALE/ XMIN,XMAX,YMIN,YMAX
       INTEGER WSID
-      DATA INIPLT / .FALSE. /
-      DATA XMIN,XMAX,YMIN,YMAX / 0.0,10.4,0.0,10.4 /
-      DATA WSID / 1 /
-      COMMON /INIT/ INIPLT
+      INTEGER IDUM,GCONID,GWSDEF
       LOGICAL INIPLT
+      DATA INIPLT / .FALSE. /
+      DATA XMIN,XMAX,YMIN,YMAX / 0.0,12.4,0.0,12.4 /
+      DATA WSID / 1 /
+      DATA GCONID /0/, GWSDEF /4/
+      COMMON /INIT/ INIPLT
       IF (.NOT.INIPLT) THEN
-         CALL GOPKS (0)
+         CALL GOPKS (6, IDUM)
          CALL GOPWK (WSID,GCONID,GWSDEF)
          CALL GACWK (WSID)
          CALL GSWN (1,XMIN,XMAX,YMIN,YMAX)
+         Call GSClip(0)
          CALL GSVP (1,0.0,1.0,0.0,1.0)
          CALL GSELNT (1)
          CALL GSLWSC (1.5)
+C
+C     Colors
+C
+         !Call gscr(1,0,1.0,1.0,1.0) ! background color white
+         Call Gscr(1,0,0.0,0.0,0.0) ! background color black
+         !Call gscr(1,1,0.0,0.0,0.0) ! bond color black
+         Call Gscr(1,1,1.0,1.0,1.0) ! bond color white
+         Call Gscr(1,2,0.0,0.0,1.0) ! dashed line color
+         Call Gscr(1,3,1.0,0.0,0.0) ! normal line color
+         Call Gscr(1,4,0.5,0.5,0.5) ! text color
+C     Set text color
+         Call Gstxci(4)
       ELSE
          CALL GCLRWK (WSID,0)
       ENDIF
@@ -95,8 +110,17 @@ C
       ENDIF
       CALL GSCHUP (SINEW,CONEW)
       CALL GSCHH (HEIGHT)
-      CALL GSTXP (GRIGHT)
-      CALL GSTXFP (-12,GSTRKP)
+      !CALL GSTXP (GRIGHT)
+      !CALL GSTXFP (-12,GSTRKP)
+C
+C     TITLE text case. set ORIGX,Y = 0,0
+C
+      If (NC.EQ.120) Then
+         TMPX = ORIGX
+         TMPY = ORIGY
+         ORIGX = 0.0
+         ORIGY = 0.0
+      End If
       X = X1+ORIGX
       Y = Y1+ORIGY
       IF (NC.EQ.-2) THEN
@@ -113,6 +137,10 @@ C
       ELSEIF (NC.GT.0) THEN
          CALL GTX (X,Y,STR(1:NC))
       ENDIF
+      If (NC.GT.120) Then
+         ORIGX = TMPX
+         ORIGY = TMPY
+      End If
       RETURN
       END
 C
@@ -410,7 +438,7 @@ C
 C
 C-----------------------------------------------------------------------
 C
-      SUBROUTINE PLOT (X,Y,IMOD)
+      SUBROUTINE PLOT (XX,YY,IMOD)
 C
 C-----------------------------------------------------------------------
 C
@@ -418,12 +446,15 @@ C     THIS ROUTINE WILL PLOT A LINE ON THE CURRENT WORKSTATION TYPE
 C
 C     INCLUDE 'SYS$LIBRARY:GKSDEFS.BND'
 C
-      REAL XARRAY(2),YARRAY(2),X,Y,ORIGX,ORIGY,XDNLST,YDNLST
+      REAL XARRAY(2),YARRAY(2),XX,YY,ORIGX,ORIGY,XDNLST,YDNLST
       COMMON /WHRE/ XDNLST,YDNLST,XARRAY,YARRAY
       LOGICAL RESET,PENUP
 C
       COMMON /ORIGIN/ ORIGX,ORIGY
+      COMMON /RPLOT/ NN,CO(3),CM,THE,GAM,PHI,X(1024),Y(1024),Z(1024),
+     *   IDASH,SCALE,PERZ
       INTEGER WSID
+      Real Pxa(30),Pya(30)
       DATA ORIGX,ORIGY / 0.0,0.0 /,PENUP / .TRUE. /,RESET / .FALSE. /
       DATA XARRAY / 0.0,0.0 /,YARRAY / 0.0,0.0 /,WSID / 1 /
       COMMON /INIT/ INIPLT
@@ -454,13 +485,36 @@ C
 C
 C       SCALE FACTOR HERE???
 C
-         XARRAY(2) = X+ORIGX
-         YARRAY(2) = Y+ORIGY
+         XARRAY(2) = XX+ORIGX
+         YARRAY(2) = YY+ORIGY
       ENDIF
 C
 C     WRITE THE SEQUENCE CORRESPONDING TO THE MODE
 C
       IF (IMD.EQ.999) THEN
+C
+C        Check mouse feedback
+C
+         Call Gsskm(WSID,1,0,1) ! stroke
+  200    Call Grqsk(WSID,1,30,istat,itnr,np,pxa,pya) ! stroke
+         If (istat.NE.1) goto 200
+
+         If (np.gt.30) np = 30
+         dx = pxa(np)-pxa(1)
+         dy = pya(np)-pya(1)
+         If (dx.eq.0.0.and.dy.eq.0.0) goto 200
+         If (abs(dx).gt.abs(dy)) then
+           THE = THE + dx * 20
+         Else
+           GAM = GAM + dy * 20
+         End If
+         IMOD = 99
+C
+C        Clear
+C
+         CALL GCLRWK (WSID,0)
+         Return
+         goto 200
 C
 C            CALL GTX(0.0,0.0,'TYPE ENTER TO CONTINUE')
 C            READ(*,*)
@@ -491,8 +545,8 @@ C
 C     IF RESET FLAG THEN USE X,Y FOR THE NEW ORIGIN
 C
       IF (RESET) THEN
-         ORIGX = X
-         ORIGY = Y
+         ORIGX = XX
+         ORIGY = YY
          RESET = .FALSE.
       ENDIF
       RETURN
