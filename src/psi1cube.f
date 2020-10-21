@@ -1,12 +1,9 @@
+C Program to produce a Gausian9x/0x cube file with a psi1 input.
+C almost copy of the psi1.f except cube generation parts.
 C
-C       ***********************************************************
-C       ********************  PSI/88 - PART 1  ********************
-C       ***********************************************************
+C W. K. P <wkpark@gmail.com> 2001/11
 C
-C       Version 1.0  Any questions to the author should specify
-C                    the version being used.
-C
-      PROGRAM PSI1
+      PROGRAM PSI1Cube
       IMPLICIT REAL (A-H,O-Z)
 C
 C      DANIEL L. SEVERANCE
@@ -44,7 +41,7 @@ C      CARD INPUT IS DESCRIBED IN SUBROUTINE MOGRID.
 C
       COMMON /IO/ IRD,ILST
       IRD = 5
-      ILST = 6
+      ILST = 0
 C
 C       MAKE 3-D ORBITAL VALUE OR DENSITY GRID AND SAVE TO DISK.
 C       3-D CONTOURS ( WHICH USED TO BE GENERATED IN THREED )
@@ -297,7 +294,8 @@ C
 C
 C       WRITE OUT THE COMPUTED DENSITY MATRIX
 C
-      OPEN (17,FILE='FOR017',FORM='UNFORMATTED',STATUS='UNKNOWN')
+C#    OPEN (17,FILE='FOR017',FORM='UNFORMATTED',STATUS='UNKNOWN')
+      IOUT=6
       MAXPTS = MXPTS
 C
 C     COMPUTE MIN AND MAX DENSITY VALUES COMPUTED, SHOW TO THE USER
@@ -313,12 +311,30 @@ C
   100    CONTINUE
   110 CONTINUE
       WRITE (ILST,*) 'MIN, MAX DENSITY(VALUE) COMPUTED IS ',DMIN,DMAX
-      WRITE (17) MAXPTS,NAT
-      WRITE (17) (IAN(I),I=1,NAT)
-      WRITE (17) ((C(I,J),J=1,3),I=1,NAT)
-      WRITE (17) (((DENSIT(NX,NY,NZ),NX=1,MAXPTS),NY=1,MAXPTS),NZ=1,
-     *   MAXPTS)
-      WRITE (17) XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX
+C#      WRITE (17) MAXPTS,NAT
+C#      WRITE (17) (IAN(I),I=1,NAT)
+C#      WRITE (17) ((C(I,J),J=1,3),I=1,NAT)
+C#      WRITE (17) (((DENSIT(NX,NY,NZ),NX=1,MAXPTS),NY=1,MAXPTS),NZ=1,
+C#     *   MAXPTS)
+C#      WRITE (17) XMIN,XMAX,YMIN,YMAX,ZMIN,ZMAX
+C
+C  Write Gaussian9x/0x style Cube
+C
+      Write (IOUT,'(A80)') TITLE
+      Write (IOUT,'((A))') 'MO Plot'
+      Write (IOUT,'(I5,3F12.5)') -NAT,XMI,YMI,ZMI
+      Write (IOUT,'(I5,3F12.5)') MAXPTS,XINC,0.0,0.0
+      Write (IOUT,'(I5,3F12.5)') MAXPTS,0.0,YINC,0.0
+      Write (IOUT,'(I5,3F12.5)') MAXPTS,0.0,0.0,ZINC
+      Do i=1,NAT
+        Write (IOUT,'(I5,4f12.5)') IAN(I),FLOAT(IAN(I)),(C(I,J),J=1,3)
+      End Do
+      Write (IOUT,'(I5,I5)') 1, MONE
+      Do NX=1,MAXPTS
+        Do NY=1,MAXPTS
+          Write (IOUT,'(6G13.5)') (DENSIT(NX,NY,NZ),NZ=1,MAXPTS)
+        End Do
+      End do
       RETURN
       END
 C
