@@ -98,7 +98,7 @@ EXTRAS = PSI2GKS
 #######################################################################
 #
 
- all:  PSI1 PSICON PSI2CT PSI2HP PSI2PS PREPLOT $(EXTRAS)
+ all:  PSI1 PSICON PSI2CT PSI2HP PSI2PS PREPLOT psi1cube $(EXTRAS)
 
 #
 # Install in the executable directory - may need to be superuser
@@ -121,6 +121,11 @@ install: PSI1 PSICON PSI2CT PSI2HP PSI2PS PREPLOT chk2psi $(EXTRAS)
 #
  PSI1: psi1.f 
 	$(FC) $(FFLAGS) psi1.f -o PSI1 $(LFLAGS)
+#
+# This is the Cube file generation program
+#
+ psi1cube: psi1cube.f
+	$(FC) $(FFLAGS) psi1cube.f -o psi1cube
 
 #
 # This is the contour generation program (PSICON/88)
